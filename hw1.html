@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fun With Sonic</title>
+</head>
+<body>
+<canvas id="canvas" width="300" height="300" style="background: url('madison.jpg')"></canvas>
+<script>
+  var cx = document.querySelector("canvas").getContext("2d");
+  var img = document.createElement("img");
+
+    var imgTails2 = document.createElement("img");
+  imgTails2.src = "tails2.png";
+
+  var imgTails = document.createElement("img");
+  imgTails.src = "tails.png";
+
+
+  img.src = "soniccd.gif";
+  var spriteW = 48, spriteH = 48;
+  var spriteWTails = 52.5;
+  var spriteHTails = 65;
+  var reverseWTails = 52.5, reverseHTails = 65;
+  img.addEventListener("load", function() {
+    var cycle = 0;
+      var round = 0;
+      var rowCycle = 0;
+      var start = 0;
+      var add = 10;
+      var mod = 6;
+      var inc = 1;
+
+      var startTails = 0;
+      var addTails = 10;
+      var rowCycleTails = 3;
+      var cycleTails = 14;
+      var incTails = 1;
+
+      var cycleTails2 = 0;
+
+      // flag for Tails direction
+      var flag = false;
+    setInterval(function() {
+  if (start + 15> canvas.width - spriteW ||
+      start + 15 < 0) {
+      cx.scale(-1,1);
+      cx.translate(-canvas.width,0);
+    start = 0;
+  }
+      cx.clearRect(start, canvas.height-spriteH, canvas.width, canvas.height);
+        start = start+add;
+        round = round + 5;
+      cx.drawImage(img,
+                   // source rectangle
+                   cycle * spriteW, rowCycle * spriteH, spriteW, spriteH,
+                   // destination rectangle
+                   start,              canvas.height-spriteH, spriteW, spriteH);
+      cycle = (cycle + inc) % mod;
+        if(round>=60 && round<130&& cycle == mod-1 && rowCycle <= 1 && cycle<6){
+            mod = 4;
+            cycle = 0;
+            add = add +5;
+        }
+        if(round >= 130 && round < 150 && cycle == mod-1 && rowCycle <= 1 && cycle<6){
+            mod = 4;
+            cycle = 0;
+            add = add + 10;
+           rowCycle++;
+         round = 0;
+       }
+       // screech stop
+        if(round >= 150 && round < 180 && rowCycle >= 2 && rowCycle <= 3){
+            inc = 0;
+            add = 5;
+            mod = 12;
+            cycle = 6;
+            rowCycle = 3;
+       }
+       // stare forward
+       if(round >= 180 && round < 240){
+           cycle = 6;
+           add = 0;// still sprite
+           rowCycle = 0;
+       }
+       // stare screen
+       if(round >=240 && round < 270){
+           cycle = 7;
+       }
+        // surprise stare
+       if(round >=270 && round < 300){
+           cycle = 8;
+       }
+       if(round >= 300){
+           cycle++;
+       }
+       if(cycle==11){
+           cycle = 9;
+       }
+       // Tails appear
+       if(round >= 350){
+           if(cycleTails == 16){
+               cycleTails = 14;
+           }
+           if(cycleTails == 15){
+               spriteWTails = 52.195;
+                spriteHTails = 64.7;
+           }
+           if(cycleTails == 14){
+               spriteWTails = 52.5;
+                spriteHTails = 64;
+           }
+           if(cycleTails2 == 0){
+               reverseWTails = 1.5;
+               reverseHTails = 0;
+           }
+           if(cycleTails2 == 1){
+               reverseWTails = -.5;
+               reverseHTails = -1;
+           }
+            if(flag==true){
+                 cx.clearRect(startTails - 5, 0, canvas.width, spriteHTails);
+      cx.drawImage(imgTails,
+                   // source rectangle
+                   cycleTails * spriteWTails, rowCycleTails * spriteHTails, spriteWTails, spriteHTails,
+                   // destination rectangle
+                   startTails,              0, spriteWTails, spriteHTails);
+      cycleTails = cycleTails + 1;
+           startTails = startTails+addTails;
+                if(startTails >= canvas.width -10){
+                    flag = false;
+                }
+       }else{
+           cx.clearRect(startTails + 5, 0, canvas.width, spriteHTails + 8);
+      cx.drawImage(imgTails2,
+                   // source rectangle
+              (cycleTails2 * spriteWTails)+reverseWTails, 0 + reverseHTails, spriteWTails + reverseWTails, spriteHTails +reverseHTails,
+                   // destination rectangle
+                   startTails - 30, 5, spriteWTails, spriteHTails + 8);
+      cycleTails2 = (cycleTails2 + 1) % 2;
+           startTails = startTails - addTails;
+           if(startTails <= 0){
+               flag = true;
+           }
+       }}
+    }, 120);
+  });
+</script>
+</body>
+</html>
